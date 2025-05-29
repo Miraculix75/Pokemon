@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokedex</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="animation.css"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+<body class="main-layout">
+
+  <video id="introVideo" autoplay muted>
+    <source src="Pokemon.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+
+  <header>
+    <div class="logo">Pokedex</div>
+    <div class="search">
+      <button id="clearSearchBtn" title="Clear search and show all">X</button>
+      <input type="text" id="searchInput" placeholder="Search by Name, ID, or Type..." />
+      <select id="typeFilter">
+        <option value="">Filter by Type</option>
+        <option value="fire">Fire</option>
+        <option value="water">Water</option>
+        <option value="grass">Grass</option>
+        <option value="electric">Electric</option>
+        <option value="psychic">Psychic</option>
+        <option value="fighting">Fighting</option>
+        <option value="ground">Ground</option>
+        <option value="ghost">Ghost</option>
+        <option value="dragon">Dragon</option>
+        <option value="ice">Ice</option>
+        <option value="bug">Bug</option>
+        <option value="rock">Rock</option>
+        <option value="steel">Steel</option>
+        <option value="fairy">Fairy</option>
+        <option value="dark">Dark</option>
+        <option value="poison">Poison</option>
+        <option value="flying">Flying</option>
+        <option value="normal">Normal</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="grid"></main>
+
+  <footer>
+    <p>© 2024 Pokedex</p>
+    <div id="pagination-container" class="pagination"></div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="intro.js"></script>
+  <script>
+    const observer = new MutationObserver(() => {
+      const anyExpanded = document.querySelector('.pokemon-card.expanded');
+      document.body.classList.toggle('no-scroll', !!anyExpanded);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+</body>
+</html>

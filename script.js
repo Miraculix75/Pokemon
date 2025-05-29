@@ -1,0 +1,244 @@
+const POKE_API_BASE = "https://pokeapi.co/api/v2/pokemon";
+const POKEMON_LIMIT = 20;
+let currentOffset = 0;
+let totalPokemonCount = 0;
+let isLoading = false;
+let isSearchResultsView = false;
+let currentExpandedIndex = -1;
+let currentCards = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  document.getElementById('searchInput')?.addEventListener('keypress', e => {
+    if (e.key === 'Enter') handleSearch();
+  });
+
+  document.getElementById('clearSearchBtn')?.addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    isSearchResultsView = false;
+    currentOffset = 0;
+    loadData();
+  });
+
+  document.getElementById('typeFilter')?.addEventListener('change', async (e) => {
+    const type = e.target.value;
+    if (!type) {
+      loadData();
+      return;
+    }
+    isLoading = true;
+    const grid = document.querySelector('.grid');
+    grid.innerHTML = '<p style="text-align:center;">Loading...</p>';
+    try {
+      const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+      const data = await res.json();
+      grid.innerHTML = '';
+      currentCards = [];
+      for (let i = 0; i < Math.min(data.pokemon.length, 40); i++) {
+        const poke = await fetch(data.pokemon[i].pokemon.url).then(r => r.json());
+        createPokemonCard(poke);
+        currentCards.push(poke);
+      }
+    } catch (err) {
+      grid.innerHTML = `<p style="text-align:center; color: red;">Failed to load type filter</p>`;
+    } finally {
+      isLoading = false;
+    }
+  });
+});
+
+async function loadData() {
+  isLoading = true;
+  const grid = document.querySelector('.grid');
+  const pagination = document.getElementById('pagination-container');
+  grid.innerHTML = '<p style="text-align:center;">Loading...</p>';
+  pagination.innerHTML = '';
+
+  try {
+    const res = await fetch(`${POKE_API_BASE}?limit=${POKEMON_LIMIT}&offset=${currentOffset}`);
+    const data = await res.json();
+    totalPokemonCount = data.count;
+    currentCards = [];
+
+    grid.innerHTML = '';
+    for (let i = 0; i < data.results.length; i++) {
+      const poke = await fetch(data.results[i].url).then(r => r.json());
+      createPokemonCard(poke);
+      currentCards.push(poke);
+    }
+    renderPagination();
+  } catch (e) {
+    console.error(e);
+    grid.innerHTML = '<p style="text-align:center;color:red;">Failed to load data.</p>';
+  } finally {
+    isLoading = false;
+  }
+}
+
+function renderPagination() {
+  const container = document.getElementById('pagination-container');
+  container.innerHTML = '';
+
+  const totalPages = Math.ceil(totalPokemonCount / POKEMON_LIMIT);
+  const currentPage = Math.floor(currentOffset / POKEMON_LIMIT) + 1;
+
+  const maxVisible = 5;
+  let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let end = Math.min(totalPages, start + maxVisible - 1);
+
+  if (end - start < maxVisible - 1) {
+    start = Math.max(1, end - maxVisible + 1);
+  }
+
+  if (start > 1) {
+    const prevArrow = document.createElement('button');
+    prevArrow.textContent = '«';
+    prevArrow.addEventListener('click', () => {
+      currentOffset = (start - 2) * POKEMON_LIMIT;
+      loadData();
+    });
+    container.appendChild(prevArrow);
+  }
+
+  for (let i = start; i <= end; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    if (i === currentPage) btn.classList.add('active');
+    btn.addEventListener('click', () => {
+      currentOffset = (i - 1) * POKEMON_LIMIT;
+      loadData();
+    });
+    container.appendChild(btn);
+  }
+
+  if (end < totalPages) {
+    const nextArrow = document.createElement('button');
+    nextArrow.textContent = '»';
+    nextArrow.addEventListener('click', () => {
+      currentOffset = end * POKEMON_LIMIT;
+      loadData();
+    });
+    container.appendChild(nextArrow);
+  }
+}
+
+function createPokemonCard(pokemon) {
+  const id = pokemon.id;
+  const name = pokemon.name;
+  const image = pokemon.sprites.other['official-artwork'].front_default;
+  const type = pokemon.types[0].type.name;
+  const hp = pokemon.stats[0].base_stat;
+  const attack = pokemon.stats[1].base_stat;
+  const defense = pokemon.stats[2].base_stat;
+  const speed = pokemon.stats[5]?.base_stat ?? '—';
+  const abilities = pokemon.abilities.map(a => a.ability.name).join(', ');
+
+  const container = document.createElement('div');
+  container.className = `pokemon-card bg-${type}`;
+  container.innerHTML = `
+    <span class="pokemon-number">#${String(id).padStart(3, '0')}</span>
+    <div class="pokemon-name">${name}</div>
+    <div class="pokemon-image"><img src="${image}" alt="${name}"></div>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="stats">Stats</button>
+      <button class="tab-btn" data-tab="moves">Moves</button>
+      <button class="tab-btn" data-tab="shiny">Shiny</button>
+    </div>
+
+    <div class="tab-content tab-stats">
+      <div class="pokemon-types">
+        ${pokemon.types.map(t => `<span class="type type-${t.type.name}">${t.type.name}</span>`).join('')}
+      </div>
+      <div class="pokemon-stats">
+        <p><strong>HP:</strong> ${hp}</p>
+        <p><strong>Attack:</strong> ${attack}</p>
+        <p><strong>Defense:</strong> ${defense}</p>
+        <p><strong>Speed:</strong> ${speed}</p>
+      </div>
+      <div class="abilities"><strong>Abilities:</strong> ${abilities}</div>
+    </div>
+
+    <div class="tab-content tab-moves hidden">
+      <ul>${pokemon.moves.slice(0, 10).map(m => `<li>${m.move.name}</li>`).join('')}</ul>
+    </div>
+
+    <div class="tab-content tab-shiny hidden">
+      <img src="${pokemon.sprites.front_shiny}" alt="${name} shiny" style="width: 120px;">
+    </div>
+
+    <div class="card-footer hidden">
+      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 40px; margin-top: 1rem;">
+      <div class="overlay-nav-buttons">
+        <button class="prev-btn">←</button>
+        <button class="next-btn">→</button>
+      </div>
+    </div>
+
+    <div class="close-button">×</div>
+  `;
+
+  container.addEventListener('dblclick', () => {
+    document.body.classList.add('no-scroll');
+    document.querySelectorAll('.pokemon-card.expanded').forEach(c => {
+      c.classList.remove('expanded');
+      c.classList.remove(...[...c.classList].filter(cl => cl.startsWith('bg-')));
+    });
+    container.classList.add('expanded');
+    container.classList.add(`bg-${type}`);
+    currentExpandedIndex = [...document.querySelectorAll('.pokemon-card')].indexOf(container);
+    container.querySelector('.card-footer')?.classList.remove('hidden');
+  });
+
+  container.querySelector('.close-button').addEventListener('click', e => {
+    e.stopPropagation();
+    container.classList.remove('expanded');
+    document.body.classList.remove('no-scroll');
+    container.querySelector('.card-footer')?.classList.add('hidden');
+    currentExpandedIndex = -1;
+  });
+
+  container.querySelector('.prev-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    navigateOverlay(-1);
+  });
+
+  container.querySelector('.next-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    navigateOverlay(1);
+  });
+
+  const tabButtons = container.querySelectorAll(".tab-btn");
+  const tabContents = container.querySelectorAll(".tab-content");
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      tabContents.forEach(tab => tab.classList.add("hidden"));
+      container.querySelector(`.tab-${btn.dataset.tab}`).classList.remove("hidden");
+    });
+  });
+
+  document.querySelector('.grid').appendChild(container);
+}
+
+function navigateOverlay(direction) {
+  if (currentExpandedIndex === -1) return;
+  const cards = document.querySelectorAll('.pokemon-card');
+  cards[currentExpandedIndex].classList.remove('expanded');
+  cards[currentExpandedIndex].classList.remove(...[...cards[currentExpandedIndex].classList].filter(cl => cl.startsWith('bg-')));
+
+  currentExpandedIndex += direction;
+  if (currentExpandedIndex < 0) currentExpandedIndex = cards.length - 1;
+  if (currentExpandedIndex >= cards.length) currentExpandedIndex = 0;
+
+  const newCard = cards[currentExpandedIndex];
+  const newType = currentCards[currentExpandedIndex]?.types?.[0]?.type?.name;
+  newCard.classList.add('expanded');
+  if (newType) newCard.classList.add(`bg-${newType}`);
+  document.body.classList.add('no-scroll');
+  newCard.querySelector('.card-footer')?.classList.remove('hidden');
+}
