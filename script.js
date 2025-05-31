@@ -141,7 +141,7 @@ function createPokemonCard(pokemon) {
     <div class="pokemon-name">${name}</div>
     <div class="pokemon-image"><img src="${image}" alt="${name}"></div>
 
-    <div class="tab-buttons">
+    <div class="tab-buttons hidden">
       <button class="tab-btn active" data-tab="stats">Stats</button>
       <button class="tab-btn" data-tab="moves">Moves</button>
       <button class="tab-btn" data-tab="shiny">Shiny</button>
@@ -169,7 +169,7 @@ function createPokemonCard(pokemon) {
     </div>
 
     <div class="card-footer hidden">
-      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 40px; margin-top: 1rem;">
+      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 200px; margin-top: 1rem;">
       <div class="overlay-nav-buttons">
         <button class="prev-btn">←</button>
         <button class="next-btn">→</button>
