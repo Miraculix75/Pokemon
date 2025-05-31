@@ -497,6 +497,8 @@ video#introVideo {
   display: inline-block !important; /* Komplett ausblenden im Tab-System */
 }
 
+
+
 /* Bilder in Stats und Moves komplett ausblenden */
 .pokemon-card.expanded .tab-stats img,
 .pokemon-card.expanded .tab-moves img {

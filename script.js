@@ -217,15 +217,39 @@ function createPokemonCard(pokemon) {
   `;
 
   container.addEventListener('dblclick', () => {
-    document.body.classList.add('no-scroll');
-    document.querySelectorAll('.pokemon-card.expanded').forEach(c => {
-      c.classList.remove('expanded');
-      c.classList.remove(...[...c.classList].filter(cl => cl.startsWith('bg-')));
+    const isExpanded = container.classList.contains('expanded');
+    
+    // Schließe andere geöffnete Karten
+    document.querySelectorAll('.pokemon-card.expanded').forEach(card => {
+      if (card !== container) {
+        card.classList.remove('expanded');
+      }
     });
-    container.classList.add('expanded');
-    container.classList.add(`bg-${type}`);
-    currentExpandedIndex = [...document.querySelectorAll('.pokemon-card')].indexOf(container);
-    container.querySelector('.card-footer')?.classList.remove('hidden');
+    
+    // Toggle expanded Zustand der aktuellen Karte
+    container.classList.toggle('expanded', !isExpanded);
+    
+    // WICHTIG: Setze den currentExpandedIndex, wenn die Karte expandiert wird
+    if (!isExpanded) {
+      // Finde den Index der aktuellen Karte
+      const allCards = Array.from(document.querySelectorAll('.pokemon-card'));
+      currentExpandedIndex = allCards.indexOf(container);
+      
+      // Footer und Buttons einblenden
+      const footer = container.querySelector('.card-footer');
+      if (footer) {
+        footer.classList.remove('hidden');
+      }
+      document.body.classList.add('no-scroll');
+    } else {
+      // Wenn die Karte geschlossen wird
+      currentExpandedIndex = -1;
+      document.body.classList.remove('no-scroll');
+      const footer = container.querySelector('.card-footer');
+      if (footer) {
+        footer.classList.add('hidden');
+      }
+    }
   });
 
   container.querySelector('.close-button').addEventListener('click', e => {
@@ -255,17 +279,19 @@ function createPokemonCard(pokemon) {
 function navigateOverlay(direction) {
   if (currentExpandedIndex === -1) return;
   const cards = document.querySelectorAll('.pokemon-card');
+  
+  // Schließe aktuelle Karte ohne bg-Klassen zu entfernen
   cards[currentExpandedIndex].classList.remove('expanded');
-  cards[currentExpandedIndex].classList.remove(...[...cards[currentExpandedIndex].classList].filter(cl => cl.startsWith('bg-')));
 
   currentExpandedIndex += direction;
   if (currentExpandedIndex < 0) currentExpandedIndex = cards.length - 1;
   if (currentExpandedIndex >= cards.length) currentExpandedIndex = 0;
 
   const newCard = cards[currentExpandedIndex];
-  const newType = currentCards[currentExpandedIndex]?.types?.[0]?.type?.name;
+  
+  // Neue Karte expandieren ohne ihre bg-Klasse zu ändern
   newCard.classList.add('expanded');
-  if (newType) newCard.classList.add(`bg-${newType}`);
+  
   document.body.classList.add('no-scroll');
   newCard.querySelector('.card-footer')?.classList.remove('hidden');
 }
