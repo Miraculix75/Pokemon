@@ -494,7 +494,7 @@ video#introVideo {
 
 /* WICHTIG: Card-Footer in Tab-Ansicht ausblenden */
 .pokemon-card.expanded .card-footer {
-  display: none !important; /* Komplett ausblenden im Tab-System */
+  display: inline-block !important; /* Komplett ausblenden im Tab-System */
 }
 
 /* Bilder in Stats und Moves komplett ausblenden */

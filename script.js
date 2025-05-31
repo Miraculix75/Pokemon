@@ -203,10 +203,10 @@ function createPokemonCard(pokemon) {
 
     <div class="tab-content tab-shiny hidden">
       <img src="${pokemon.sprites.front_shiny}" alt="${name} shiny" style="width: 120px;">
+      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 200px; margin-top: 1rem;">
     </div>
 
     <div class="card-footer hidden">
-      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 200px; margin-top: 1rem;">
       <div class="overlay-nav-buttons">
         <button class="prev-btn">←</button>
         <button class="next-btn">→</button>
