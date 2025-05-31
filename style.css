@@ -234,6 +234,7 @@ main {
     transform: translate(-50%, -50%) !important;
     position: fixed;
     z-index: 1001;
+    padding-bottom: 3.5rem; /* Platz für den Footer schaffen */
 }
 
 .pokemon-card.expanded::before {
@@ -495,6 +496,14 @@ video#introVideo {
 /* WICHTIG: Card-Footer in Tab-Ansicht ausblenden */
 .pokemon-card.expanded .card-footer {
   display: inline-block !important; /* Komplett ausblenden im Tab-System */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: inherit; /* Erbt die Hintergrundfarbe der Karte */
+  border-radius: 0 0 var(--card-radius) var(--card-radius); /* Runde Ecken unten */
 }
 
 
@@ -548,4 +557,116 @@ video#introVideo {
 .pokemon-card.expanded .tab-btn.active {
   background-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Overlay-Navigationsbuttons besser positionieren */
+.pokemon-card.expanded .overlay-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Styling für die Navigations-Buttons */
+.pokemon-card.expanded .prev-btn,
+.pokemon-card.expanded .next-btn {
+  background: linear-gradient(145deg, #3a4a58, #cf5656);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0.7rem 1.2rem;
+  border-radius: 50%;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover-Effekt */
+.pokemon-card.expanded .prev-btn:hover,
+.pokemon-card.expanded .next-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(145deg, #cf5656, #3a4a58);
+}
+
+/* Aktiver Zustand (beim Klicken) */
+.pokemon-card.expanded .prev-btn:active,
+.pokemon-card.expanded .next-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Glanzeffekt-Animation */
+.pokemon-card.expanded .prev-btn::after,
+.pokemon-card.expanded .next-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+/* Glanzeffekt beim Hover */
+.pokemon-card.expanded .prev-btn:hover::after,
+.pokemon-card.expanded .next-btn:hover::after {
+  animation: shine 1.5s forwards;
+}
+
+/* Navigations-Button-Container */
+.pokemon-card.expanded .overlay-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+/* Spezifisches Styling für prev und next */
+.pokemon-card.expanded .prev-btn {
+  margin-right: auto;
+}
+
+.pokemon-card.expanded .next-btn {
+  margin-left: auto;
+}
+
+/* Animation für den Glanzeffekt */
+@keyframes shine {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%) rotate(30deg);
+  }
+  20% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+/* Tastendruck-Animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Pulse-Animation beim Laden der Seite für bessere Sichtbarkeit */
+.pokemon-card.expanded .prev-btn,
+.pokemon-card.expanded .next-btn {
+  animation: pulse 1s ease-in-out 1;
 }
