@@ -1,0 +1,91 @@
+@import './variables.css';
+
+.pokemon-card.expanded {
+    animation: fadeInZoom 0.4s ease forwards;
+    height: 80vh;
+    overflow-y: auto;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed;
+    z-index: 1001;
+    padding-bottom: 3.5rem; /* Platz für den Footer schaffen */
+}
+
+.pokemon-card.expanded::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+/* Überschreiben für expandierte Karten */
+.pokemon-card.expanded .card-footer {
+    display: block !important; /* Nur in expandierten Karten anzeigen */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: inherit;
+    border-radius: 0 0 var(--card-radius) var(--card-radius);
+}
+
+.pokemon-card.expanded .pokemon-image {
+    height: auto;
+    max-height: 250px;
+    margin-bottom: 1rem;
+}
+
+.pokemon-card.expanded .pokemon-image img {
+    max-height: 240px;
+    width: auto;
+    object-fit: contain;
+}
+
+.pokemon-card.expanded .pokemon-stats {
+    color: #574e4e;
+    visibility: visible;
+}
+
+.pokemon-card.expanded .abilities {
+    color: #574e4e;
+    display: block;
+}
+
+.pokemon-card.expanded .overlay-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.pokemon-card.expanded .tab-moves > ul li{
+    display: block;
+    list-style-type: none;
+    color: #574e4e;
+    
+}
+
+/* Overlay-Navigation */
+.overlay-nav {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1003;
+    padding: 0 1rem;
+}
+
+.pokemon-card.expanded ~ .overlay-nav,
+.overlay-nav.visible {
+    display: flex;
+}

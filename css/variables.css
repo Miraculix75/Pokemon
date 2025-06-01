@@ -1,0 +1,33 @@
+:root {
+    /* Allgemeine Farbvariablen */
+    --primary-color: #333;
+    --text-color: #fff;
+    --container-bg: rgb(43, 35, 25);
+    --hover-color: #cf5656;
+    --active-color: #8c2b2b;
+    --dark-bg: #001a1a;
+    
+    /* Layout-Variablen */
+    --card-spacing: 1rem;
+    --card-radius: 8px;
+    
+    /* Pokémon-Typ-Farben */
+    --type-normal: #A8A77A;
+    --type-fire: #EE8130;
+    --type-water: #6390F0;
+    --type-electric: #F7D02C;
+    --type-grass: #7AC74C;
+    --type-ice: #96D9D6;
+    --type-fighting: #C22E28;
+    --type-poison: #A33EA1;
+    --type-ground: #E2BF65;
+    --type-flying: #A98FF3;
+    --type-psychic: #F95587;
+    --type-bug: #A6B91A;
+    --type-rock: #B6A136;
+    --type-ghost: #735797;
+    --type-dragon: #6F35FC;
+    --type-dark: #705746;
+    --type-steel: #B7B7CE;
+    --type-fairy: #D685AD;
+}

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pokedex</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="animation.css"/>
   <link rel="icon" type="image/png" href="favicon.png" />
 </head>
@@ -51,8 +51,8 @@
     <div id="pagination-container" class="pagination"></div>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="intro.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script src="js/intro.js"></script>
   <script>
     const observer = new MutationObserver(() => {
       const anyExpanded = document.querySelector('.pokemon-card.expanded');

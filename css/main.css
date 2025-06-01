@@ -1,0 +1,18 @@
+/* Hauptdatei, die alle anderen CSS-Dateien importiert */
+
+/* Variablen und Grundeinstellungen */
+@import './variables.css';
+@import './base.css';
+@import './animations.css';
+
+/* Layout */
+@import './layout.css';
+
+/* Karten-Styling */
+@import './pokemon-types.css';
+@import './cards.css';
+@import './expanded-card.css';
+
+/* Komponenten */
+@import './tabs.css';
+@import './buttons.css';

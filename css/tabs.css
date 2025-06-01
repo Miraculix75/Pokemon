@@ -1,0 +1,64 @@
+@import './variables.css';
+
+/* Tab-System für erweiterte Karten */
+.pokemon-card.expanded .tab-buttons {
+    display: flex !important;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+/* Tab-System grundlegend verbessern */
+.pokemon-card.expanded .tab-content {
+    display: none !important; /* Standardmäßig alle Tab-Inhalte ausblenden */
+}
+
+.pokemon-card.expanded .tab-content.tab-stats.active,
+.pokemon-card.expanded .tab-content.tab-moves.active,
+.pokemon-card.expanded .tab-content.tab-shiny.active {
+    display: block !important; /* Nur den aktiven Tab-Inhalt anzeigen */
+}
+
+/* Bilder in Stats und Moves komplett ausblenden */
+.pokemon-card.expanded .tab-stats img,
+.pokemon-card.expanded .tab-moves img {
+    display: none !important; /* Wichtig: Bilder in Stats und Moves ausblenden */
+}
+
+/* Stats Tab Inhalte nur in Stats-Tab anzeigen */
+.pokemon-card.expanded .tab-stats:not(.active) {
+    display: none !important;
+}
+
+/* Moves Tab Inhalte nur in Moves-Tab anzeigen */
+.pokemon-card.expanded .tab-moves:not(.active) {
+    display: none !important;
+}
+
+/* Shiny Tab Inhalte nur in Shiny-Tab anzeigen */
+.pokemon-card.expanded .tab-shiny:not(.active) {
+    display: none !important;
+}
+
+/* Shiny-Bilder explizit nur im Shiny-Tab anzeigen */
+.pokemon-card.expanded .tab-shiny.active img {
+    display: block !important;
+    margin: 0 auto;
+    max-width: 80%;
+}
+
+/* Tab-Buttons gemeinsame Styles */
+.pokemon-card.expanded .tab-btn {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pokemon-card.expanded .tab-btn.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
