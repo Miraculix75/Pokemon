@@ -2,7 +2,7 @@
 
 .pokemon-card.expanded {
     animation: fadeInZoom 0.4s ease forwards;
-    height: 80vh;
+    height: auto;
     overflow-y: auto;
     top: 50% !important;
     left: 50% !important;
@@ -55,6 +55,13 @@
 .pokemon-card.expanded .abilities {
     color: #574e4e;
     display: block;
+}
+
+.pokemon-card.expanded .tab-content {
+    height: auto;
+    overflow: hidden;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .pokemon-card.expanded .overlay-nav-buttons {
