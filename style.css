@@ -670,3 +670,21 @@ video#introVideo {
 .pokemon-card.expanded .next-btn {
   animation: pulse 1s ease-in-out 1;
 }
+
+/* Grundlegende Regeln für alle card-footer */
+.pokemon-card .card-footer {
+  display: none !important; /* Standardmäßig ausgeblendet */
+}
+
+/* Überschreiben für expandierte Karten */
+.pokemon-card.expanded .card-footer {
+  display: block !important; /* Nur in expandierten Karten anzeigen */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: inherit;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+}

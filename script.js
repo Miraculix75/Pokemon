@@ -280,8 +280,18 @@ function navigateOverlay(direction) {
   if (currentExpandedIndex === -1) return;
   const cards = document.querySelectorAll('.pokemon-card');
   
-  // Schließe aktuelle Karte ohne bg-Klassen zu entfernen
+  // Schließe aktuelle Karte und verstecke deren Footer
   cards[currentExpandedIndex].classList.remove('expanded');
+  cards[currentExpandedIndex].querySelector('.card-footer')?.classList.add('hidden');
+  
+  // Wichtig: Stelle sicher, dass alle anderen Karten ebenfalls geschlossen sind
+  // und deren Footers versteckt sind
+  document.querySelectorAll('.pokemon-card').forEach(card => {
+    if (!card.isSameNode(cards[currentExpandedIndex])) {
+      card.classList.remove('expanded');
+      card.querySelector('.card-footer')?.classList.add('hidden');
+    }
+  });
 
   currentExpandedIndex += direction;
   if (currentExpandedIndex < 0) currentExpandedIndex = cards.length - 1;
@@ -289,9 +299,9 @@ function navigateOverlay(direction) {
 
   const newCard = cards[currentExpandedIndex];
   
-  // Neue Karte expandieren ohne ihre bg-Klasse zu ändern
+  // Neue Karte expandieren und Footer anzeigen
   newCard.classList.add('expanded');
+  newCard.querySelector('.card-footer')?.classList.remove('hidden');
   
   document.body.classList.add('no-scroll');
-  newCard.querySelector('.card-footer')?.classList.remove('hidden');
 }
