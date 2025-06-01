@@ -243,6 +243,7 @@ function createPokemonCard(pokemon) {
       document.body.classList.add('no-scroll');
     } else {
       // Wenn die Karte geschlossen wird
+      resetTabsToStats(container); // Reset tabs to stats
       currentExpandedIndex = -1;
       document.body.classList.remove('no-scroll');
       const footer = container.querySelector('.card-footer');
@@ -254,6 +255,7 @@ function createPokemonCard(pokemon) {
 
   container.querySelector('.close-button').addEventListener('click', e => {
     e.stopPropagation();
+    resetTabsToStats(container); // Reset tabs to stats
     container.classList.remove('expanded');
     document.body.classList.remove('no-scroll');
     container.querySelector('.card-footer')?.classList.add('hidden');
@@ -276,9 +278,36 @@ function createPokemonCard(pokemon) {
   document.querySelector('.grid').appendChild(container);
 }
 
+function resetTabsToStats(container) {
+  const tabButtons = container.querySelectorAll('.tab-btn');
+  const tabContents = container.querySelectorAll('.tab-content');
+
+  // Alle Tabs deaktivieren
+  tabButtons.forEach(btn => btn.classList.remove('active'));
+  tabContents.forEach(content => {
+    content.classList.remove('active');
+    content.classList.add('hidden');
+  });
+
+  // Stats-Tab aktivieren
+  const statsTabButton = container.querySelector('.tab-btn[data-tab="stats"]');
+  const statsTabContent = container.querySelector('.tab-content.tab-stats');
+
+  if (statsTabButton) {
+    statsTabButton.classList.add('active');
+  }
+  if (statsTabContent) {
+    statsTabContent.classList.add('active');
+    statsTabContent.classList.remove('hidden');
+  }
+}
+
 function navigateOverlay(direction) {
   if (currentExpandedIndex === -1) return;
   const cards = document.querySelectorAll('.pokemon-card');
+  
+  // Reset tabs to stats for the card being closed
+  resetTabsToStats(cards[currentExpandedIndex]);
   
   // Schließe aktuelle Karte und verstecke deren Footer
   cards[currentExpandedIndex].classList.remove('expanded');
