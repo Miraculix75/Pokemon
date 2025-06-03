@@ -13,7 +13,6 @@ export function navigateOverlay(direction) {
   cards[currentExpandedIndex].querySelector('.card-footer')?.classList.add('hidden');
   
   // Wichtig: Stelle sicher, dass alle anderen Karten ebenfalls geschlossen sind
-  // und deren Footers versteckt sind
   document.querySelectorAll('.pokemon-card').forEach(card => {
     if (!card.isSameNode(cards[currentExpandedIndex])) {
       card.classList.remove('expanded');
@@ -25,18 +24,18 @@ export function navigateOverlay(direction) {
   if (newIndex < 0) newIndex = cards.length - 1;
   if (newIndex >= cards.length) newIndex = 0;
 
-  // Stelle sicher, dass der Overlay aktiv bleibt und die Karte richtig darüber liegt
+  const newCard = cards[newIndex];
+  
+  // WICHTIG: Die neue Karte ans Ende des body verschieben, damit sie über dem Overlay liegt
+  document.body.appendChild(newCard);
+  
+  // Neue Karte expandieren und Footer anzeigen
+  newCard.classList.add('expanded');
+  newCard.querySelector('.card-footer')?.classList.remove('hidden');
+  
+  // Stelle sicher, dass der Overlay aktiv bleibt
   const overlay = document.querySelector('#overlay');
   if (overlay) overlay.classList.add('active');
-  
-  // Optional: Force-Reflow, um Stacking Context-Probleme zu beheben
-  const newCard = cards[newIndex];
-  newCard.classList.add('expanded');
-  void newCard.offsetWidth; // Force-Reflow
-  
-  // Rest des bestehenden Codes...
-  
-  newCard.querySelector('.card-footer')?.classList.remove('hidden');
   
   document.body.classList.add('no-scroll');
   setCurrentExpandedIndex(newIndex);
