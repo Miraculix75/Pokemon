@@ -33,7 +33,7 @@ export function createPokemonCard(pokemon) {
       </div>
       <div class="pokemon-stats">
         <p><strong>HP:</strong> ${hp}</p>
-        <p><strong>Attack:</strong> ${attack}</p>
+        <p><strong>Attack:</strong> ${attack}</p> 
         <p><strong>Defense:</strong> ${defense}</p>
         <p><strong>Speed:</strong> ${speed}</p>
       </div>
