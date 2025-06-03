@@ -25,10 +25,17 @@ export function navigateOverlay(direction) {
   if (newIndex < 0) newIndex = cards.length - 1;
   if (newIndex >= cards.length) newIndex = 0;
 
-  const newCard = cards[newIndex];
+  // Stelle sicher, dass der Overlay aktiv bleibt und die Karte richtig darüber liegt
+  const overlay = document.querySelector('#overlay');
+  if (overlay) overlay.classList.add('active');
   
-  // Neue Karte expandieren und Footer anzeigen
+  // Optional: Force-Reflow, um Stacking Context-Probleme zu beheben
+  const newCard = cards[newIndex];
   newCard.classList.add('expanded');
+  void newCard.offsetWidth; // Force-Reflow
+  
+  // Rest des bestehenden Codes...
+  
   newCard.querySelector('.card-footer')?.classList.remove('hidden');
   
   document.body.classList.add('no-scroll');

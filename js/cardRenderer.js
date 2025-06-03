@@ -74,6 +74,17 @@ export function createPokemonCard(pokemon) {
     container.classList.toggle('expanded', !isExpanded);
     
     if (!isExpanded) {
+      // Karte wird expandiert
+      
+      // Overlay aktivieren
+      const overlay = document.querySelector('#overlay');
+      if (overlay) overlay.classList.add('active');
+      
+      // WICHTIG: Karte ans Ende des body verschieben, damit sie über allem liegt
+      document.body.appendChild(container);
+      
+      document.body.classList.add('no-scroll');
+      
       // Finde den Index der aktuellen Karte
       const allCards = Array.from(document.querySelectorAll('.pokemon-card'));
       setCurrentExpandedIndex(allCards.indexOf(container));
@@ -83,12 +94,16 @@ export function createPokemonCard(pokemon) {
       if (footer) {
         footer.classList.remove('hidden');
       }
-      document.body.classList.add('no-scroll');
     } else {
-      // Wenn die Karte geschlossen wird
+      // Karte wird geschlossen
+      // Sicherer Zugriff auf Overlay-Element
+      const overlay = document.querySelector('#overlay');
+      if (overlay) overlay.classList.remove('active');
+      
+      document.body.classList.remove('no-scroll');
+      
       resetTabsToStats(container); // Reset tabs to stats
       setCurrentExpandedIndex(-1);
-      document.body.classList.remove('no-scroll');
       const footer = container.querySelector('.card-footer');
       if (footer) {
         footer.classList.add('hidden');
@@ -99,6 +114,10 @@ export function createPokemonCard(pokemon) {
   // Close Button Handler
   container.querySelector('.close-button').addEventListener('click', e => {
     e.stopPropagation();
+    // Sicherer Zugriff auf Overlay-Element
+    const overlay = document.querySelector('#overlay');
+    if (overlay) overlay.classList.remove('active');
+    
     resetTabsToStats(container); // Reset tabs to stats
     container.classList.remove('expanded');
     document.body.classList.remove('no-scroll');

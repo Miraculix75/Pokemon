@@ -1,5 +1,6 @@
 @import './variables.css';
 
+/* Hauptstil für expandierte Karte - z-index und Stacking Context verbessern */
 .pokemon-card.expanded {
     animation: fadeInZoom 0.4s ease forwards;
     height: auto;
@@ -8,18 +9,37 @@
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     position: fixed;
-    z-index: 1001;
+    z-index: 9999 !important; /* Deutlich höheren z-index verwenden */
+    isolation: isolate; /* Eigenen Stacking Context erzwingen */
     padding-bottom: 3.5rem; /* Platz für den Footer schaffen */
+    max-width: 400px; /* Begrenzt die Breite */
+    width: 90%; /* Responsive Breite */
+    max-height: 85vh; /* Nicht zu groß */
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Leichter Rahmen für bessere Sichtbarkeit */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Schatten für 3D-Effekt */
 }
 
-.pokemon-card.expanded::before {
-    content: '';
+/* Anstatt eines Pseudo-Elements ein echtes DOM-Element für den Overlay verwenden */
+#overlay {
+    display: none; /* Standard: ausgeblendet */
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75); /* Dunkler Overlay */
+    backdrop-filter: blur(2px); /* Unschärfe-Effekt */
+    z-index: 9000; /* Niedriger als die Karte, aber höher als andere Elemente */
+}
+
+/* JavaScript wird dieses Element anzeigen */
+#overlay.active {
+    display: block;
+}
+
+/* Altes Pseudo-Element deaktivieren */
+body.no-scroll::before {
+    display: none;
 }
 
 /* Überschreiben für expandierte Karten */
