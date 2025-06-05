@@ -58,6 +58,13 @@ footer {
     transition: opacity 1s ease;
     max-width: 1400px;
     margin: 0 auto;
+    
+    /* Grid-Stabilisierung */
+    grid-auto-rows: minmax(300px, auto);
+    contain: layout style;
+    
+    /* Verbesserte Stabilität bei DOM-Änderungen */
+    will-change: contents;
 }
 
 .pagination {

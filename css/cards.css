@@ -7,6 +7,14 @@
     text-align: center;
     cursor: pointer;
     transition: transform 0.3s ease;
+
+    /* Stabile Höhe und Box-Sizing für konsistente Dimensionen */
+    min-height: 300px;
+    height: auto;
+    box-sizing: border-box;
+    
+    /* Verhindert unerwünschte Größenänderungen */
+    contain: layout style;
 }
 
 .pokemon-card:hover {

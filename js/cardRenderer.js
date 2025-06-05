@@ -1,6 +1,6 @@
 import { currentExpandedIndex, setCurrentExpandedIndex } from './config.js';
 import { setupTabFunctionality } from './tabSystem.js';
-import { navigateOverlay } from './navigation.js';
+import { navigateOverlay, restoreCardPosition, originalPositions } from './navigation.js';
 import { resetTabsToStats } from './tabSystem.js';
 
 export function createPokemonCard(pokemon) {
@@ -76,6 +76,13 @@ export function createPokemonCard(pokemon) {
     if (!isExpanded) {
       // Karte wird expandiert
       
+      // Speichere die ursprüngliche Position vor dem Verschieben
+      if (!originalPositions.has(container)) {
+        const parent = container.parentNode;
+        const nextSibling = container.nextSibling;
+        originalPositions.set(container, { parent, nextSibling });
+      }
+      
       // Overlay aktivieren
       const overlay = document.querySelector('#overlay');
       if (overlay) overlay.classList.add('active');
@@ -108,6 +115,9 @@ export function createPokemonCard(pokemon) {
       if (footer) {
         footer.classList.add('hidden');
       }
+      
+      // Wichtig: Karte an ihren ursprünglichen Platz im Grid zurückverschieben
+      restoreCardPosition(container);
     }
   });
 
@@ -123,6 +133,9 @@ export function createPokemonCard(pokemon) {
     document.body.classList.remove('no-scroll');
     container.querySelector('.card-footer')?.classList.add('hidden');
     setCurrentExpandedIndex(-1);
+    
+    // Wichtig: Karte an ihren ursprünglichen Platz im Grid zurückverschieben
+    restoreCardPosition(container);
   });
 
   // Navigationsbuttons
