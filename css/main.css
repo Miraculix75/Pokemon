@@ -16,3 +16,25 @@
 /* Komponenten */
 @import './tabs.css';
 @import './buttons.css';
+
+/* Scroll-to-Top Button */
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 4rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+  display: none;
+  z-index: 999;
+  transition: opacity 0.3s;
+}
+
+#scrollToTopBtn.show {
+  display: block;
+}

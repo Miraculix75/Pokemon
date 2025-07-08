@@ -19,7 +19,7 @@ export function createPokemonCard(pokemon) {
   container.innerHTML = `
     <span class="pokemon-number">#${String(id).padStart(3, '0')}</span>
     <div class="pokemon-name">${name}</div>
-    <div class="pokemon-image"><img src="${image}" alt="${name}"></div>
+    <div class="pokemon-image"><img src="${image}" alt="${name}" loading="lazy"></div>
 
     <div class="tab-buttons hidden">
       <button class="tab-btn active" data-tab="stats">Stats</button>
@@ -45,8 +45,8 @@ export function createPokemonCard(pokemon) {
     </div>
 
     <div class="tab-content tab-shiny hidden">
-      <img src="${pokemon.sprites.front_shiny}" alt="${name} shiny" style="width: 120px;">
-      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 200px; margin-top: 1rem;">
+      <img src="${pokemon.sprites.front_shiny}" alt="${name} shiny" style="width: 120px;" loading="lazy">
+      <img src="${pokemon.sprites.front_default}" alt="${name}" style="height: 200px; margin-top: 1rem;" loading="lazy">
     </div>
 
     <div class="card-footer hidden">

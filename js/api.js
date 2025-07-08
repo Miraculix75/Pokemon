@@ -1,10 +1,20 @@
 import { 
   POKE_API_BASE, POKEMON_LIMIT, 
-  setIsLoading, setTotalPokemonCount, currentOffset, 
+  setIsLoading,  currentOffset, 
   setCurrentCards, addToCurrentCards
 } from './config.js';
 import { renderPagination } from './pagination.js';
 import { createPokemonCard } from './cardRenderer.js';
+
+let totalCount = 0;
+
+export function setTotalCount(count) {
+  totalCount = count;
+}
+
+export function getTotalCount() {
+  return totalCount;
+}
 
 export async function loadData() {
   setIsLoading(true);
@@ -16,7 +26,7 @@ export async function loadData() {
   try {
     const res = await fetch(`${POKE_API_BASE}?limit=${POKEMON_LIMIT}&offset=${currentOffset}`);
     const data = await res.json();
-    setTotalPokemonCount(data.count);
+    setTotalCount(data.count); // <-- Lokale Funktion verwenden!
     setCurrentCards([]);
 
     grid.innerHTML = '';
@@ -55,4 +65,23 @@ export async function fetchPokemonByType(type) {
   } finally {
     setIsLoading(false);
   }
+}
+
+// Holt eine Liste voll geladener Pokémon (Details) parallel
+export async function fetchPokemonList(offset = 0, limit = 20) {
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`);
+  const data = await response.json();
+  setTotalCount(data.count); // Hinzugefügt: Setzt die Gesamtanzahl der Pokémon
+
+  // Alle Detaildaten parallel laden
+  const detailedPokemons = await Promise.all(
+    data.results.map(pokemon => fetch(pokemon.url).then(res => res.json()))
+  );
+
+  return detailedPokemons; // Array mit allen geladenen Pokémon
+}
+
+// Lädt ein Batch Pokémon (direkt vollgeladen)
+export async function loadPokemonBatch(offset, limit) {
+  return await fetchPokemonList(offset, limit);
 }

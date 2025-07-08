@@ -4,12 +4,12 @@ import {
 } from './config.js';
 import { loadData } from './api.js';
 
-export function renderPagination() {
+export function renderPagination(totalPokemonCount, currentOffset, limit, onPageChange) {
   const container = document.getElementById('pagination-container');
   container.innerHTML = '';
 
-  const totalPages = Math.ceil(totalPokemonCount / POKEMON_LIMIT);
-  const currentPage = Math.floor(currentOffset / POKEMON_LIMIT) + 1;
+  const totalPages = Math.ceil(totalPokemonCount / limit);
+  const currentPage = Math.floor(currentOffset / limit) + 1;
 
   const maxVisible = 5;
   let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
@@ -23,8 +23,8 @@ export function renderPagination() {
     const prevArrow = document.createElement('button');
     prevArrow.textContent = '«';
     prevArrow.addEventListener('click', () => {
-      setCurrentOffset((start - 2) * POKEMON_LIMIT);
-      loadData();
+      const newOffset = (start - 2) * limit;
+      onPageChange(newOffset);
     });
     container.appendChild(prevArrow);
   }
@@ -34,8 +34,8 @@ export function renderPagination() {
     btn.textContent = i;
     if (i === currentPage) btn.classList.add('active');
     btn.addEventListener('click', () => {
-      setCurrentOffset((i - 1) * POKEMON_LIMIT);
-      loadData();
+      const newOffset = (i - 1) * limit;
+      onPageChange(newOffset);
     });
     container.appendChild(btn);
   }
@@ -44,9 +44,11 @@ export function renderPagination() {
     const nextArrow = document.createElement('button');
     nextArrow.textContent = '»';
     nextArrow.addEventListener('click', () => {
-      setCurrentOffset(end * POKEMON_LIMIT);
-      loadData();
+      const newOffset = end * limit;
+      onPageChange(newOffset);
     });
     container.appendChild(nextArrow);
   }
+
+  console.log('Pagination:', totalPokemonCount, currentOffset, limit);
 }
