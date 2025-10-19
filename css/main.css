@@ -17,6 +17,9 @@
 @import './tabs.css';
 @import './buttons.css';
 
+/* Responsive Design */
+@import './responsive.css';
+
 /* Scroll-to-Top Button */
 #scrollToTopBtn {
   position: fixed;
