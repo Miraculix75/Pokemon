@@ -3,6 +3,20 @@ import { setupTabFunctionality } from './tabSystem.js';
 import { navigateOverlay, restoreCardPosition, originalPositions } from './navigation.js';
 import { resetTabsToStats } from './tabSystem.js';
 
+// Hilfsfunktion zum Schließen einer Karte
+function closeCard(card) {
+  const overlay = document.querySelector('#overlay');
+  if (overlay) overlay.classList.remove('active');
+
+  resetTabsToStats(card);
+  card.classList.remove('expanded');
+  document.body.classList.remove('no-scroll');
+  card.querySelector('.card-footer')?.classList.add('hidden');
+  setCurrentExpandedIndex(-1);
+
+  restoreCardPosition(card);
+}
+
 export function createPokemonCard(pokemon) {
   const id = pokemon.id;
   const name = pokemon.name;
@@ -59,83 +73,56 @@ export function createPokemonCard(pokemon) {
     <div class="close-button">×</div>
   `;
 
-  // Doppelklick-Handler für das Erweitern der Karte
-  container.addEventListener('dblclick', () => {
+  // Click-Handler für das Erweitern der Karte
+  container.addEventListener('click', (e) => {
+    // Ignoriere Klicks auf Buttons (Close, Prev, Next, Tabs)
+    if (e.target.closest('button')) return;
+
     const isExpanded = container.classList.contains('expanded');
-    
+
+    // Nur öffnen, nicht schließen (zum Schließen: Close-Button oder Overlay)
+    if (isExpanded) return;
+
     // Schließe andere geöffnete Karten
     document.querySelectorAll('.pokemon-card.expanded').forEach(card => {
       if (card !== container) {
-        card.classList.remove('expanded');
+        closeCard(card);
       }
     });
-    
-    // Toggle expanded Zustand der aktuellen Karte
-    container.classList.toggle('expanded', !isExpanded);
-    
-    if (!isExpanded) {
-      // Karte wird expandiert
-      
-      // Speichere die ursprüngliche Position vor dem Verschieben
-      if (!originalPositions.has(container)) {
-        const parent = container.parentNode;
-        const nextSibling = container.nextSibling;
-        originalPositions.set(container, { parent, nextSibling });
-      }
-      
-      // Overlay aktivieren
-      const overlay = document.querySelector('#overlay');
-      if (overlay) overlay.classList.add('active');
-      
-      // WICHTIG: Karte ans Ende des body verschieben, damit sie über allem liegt
-      document.body.appendChild(container);
-      
-      document.body.classList.add('no-scroll');
-      
-      // Finde den Index der aktuellen Karte
-      const allCards = Array.from(document.querySelectorAll('.pokemon-card'));
-      setCurrentExpandedIndex(allCards.indexOf(container));
-      
-      // Footer und Buttons einblenden
-      const footer = container.querySelector('.card-footer');
-      if (footer) {
-        footer.classList.remove('hidden');
-      }
-    } else {
-      // Karte wird geschlossen
-      // Sicherer Zugriff auf Overlay-Element
-      const overlay = document.querySelector('#overlay');
-      if (overlay) overlay.classList.remove('active');
-      
-      document.body.classList.remove('no-scroll');
-      
-      resetTabsToStats(container); // Reset tabs to stats
-      setCurrentExpandedIndex(-1);
-      const footer = container.querySelector('.card-footer');
-      if (footer) {
-        footer.classList.add('hidden');
-      }
-      
-      // Wichtig: Karte an ihren ursprünglichen Platz im Grid zurückverschieben
-      restoreCardPosition(container);
+
+    // Karte wird expandiert
+    // Speichere die ursprüngliche Position vor dem Verschieben
+    if (!originalPositions.has(container)) {
+      const parent = container.parentNode;
+      const nextSibling = container.nextSibling;
+      originalPositions.set(container, { parent, nextSibling });
+    }
+
+    // Overlay aktivieren
+    const overlay = document.querySelector('#overlay');
+    if (overlay) overlay.classList.add('active');
+
+    // WICHTIG: Karte ans Ende des body verschieben, damit sie über allem liegt
+    document.body.appendChild(container);
+
+    container.classList.add('expanded');
+    document.body.classList.add('no-scroll');
+
+    // Finde den Index der aktuellen Karte
+    const allCards = Array.from(document.querySelectorAll('.pokemon-card'));
+    setCurrentExpandedIndex(allCards.indexOf(container));
+
+    // Footer und Buttons einblenden
+    const footer = container.querySelector('.card-footer');
+    if (footer) {
+      footer.classList.remove('hidden');
     }
   });
 
   // Close Button Handler
   container.querySelector('.close-button').addEventListener('click', e => {
     e.stopPropagation();
-    // Sicherer Zugriff auf Overlay-Element
-    const overlay = document.querySelector('#overlay');
-    if (overlay) overlay.classList.remove('active');
-    
-    resetTabsToStats(container); // Reset tabs to stats
-    container.classList.remove('expanded');
-    document.body.classList.remove('no-scroll');
-    container.querySelector('.card-footer')?.classList.add('hidden');
-    setCurrentExpandedIndex(-1);
-    
-    // Wichtig: Karte an ihren ursprünglichen Platz im Grid zurückverschieben
-    restoreCardPosition(container);
+    closeCard(container);
   });
 
   // Navigationsbuttons

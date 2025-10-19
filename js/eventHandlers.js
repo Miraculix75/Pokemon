@@ -49,6 +49,16 @@ export function setupEventListeners() {
   // Load More Button
   document.getElementById('loadMoreBtn')?.addEventListener('click', loadMorePokemon);
 
+  // Overlay Click Handler - schließt die erweiterte Karte
+  document.getElementById('overlay')?.addEventListener('click', () => {
+    const expandedCard = document.querySelector('.pokemon-card.expanded');
+    if (expandedCard) {
+      // Trigger close button click
+      const closeBtn = expandedCard.querySelector('.close-button');
+      if (closeBtn) closeBtn.click();
+    }
+  });
+
   // Scroll-to-Top Button
   const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
