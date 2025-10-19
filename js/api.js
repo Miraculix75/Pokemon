@@ -1,9 +1,8 @@
-import { 
-  POKE_API_BASE, POKEMON_LIMIT, 
-  setIsLoading,  currentOffset, 
+import {
+  POKE_API_BASE, POKEMON_LIMIT,
+  setIsLoading, currentOffset, setCurrentOffset,
   setCurrentCards, addToCurrentCards
 } from './config.js';
-import { renderPagination } from './pagination.js';
 import { createPokemonCard } from './cardRenderer.js';
 
 let totalCount = 0;
@@ -16,17 +15,20 @@ export function getTotalCount() {
   return totalCount;
 }
 
-export async function loadData() {
+// Initiale Daten laden (erste 20 Pokemon)
+export async function loadInitialData() {
   setIsLoading(true);
   const grid = document.querySelector('.grid');
-  const pagination = document.getElementById('pagination-container');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+
   grid.innerHTML = '<p style="text-align:center;">Loading...</p>';
-  pagination.innerHTML = '';
+  if (loadMoreBtn) loadMoreBtn.disabled = true;
 
   try {
-    const res = await fetch(`${POKE_API_BASE}?limit=${POKEMON_LIMIT}&offset=${currentOffset}`);
+    const res = await fetch(`${POKE_API_BASE}?limit=${POKEMON_LIMIT}&offset=0`);
     const data = await res.json();
-    setTotalCount(data.count); // <-- Lokale Funktion verwenden!
+    setTotalCount(data.count);
+    setCurrentOffset(0);
     setCurrentCards([]);
 
     grid.innerHTML = '';
@@ -35,10 +37,49 @@ export async function loadData() {
       createPokemonCard(poke);
       addToCurrentCards(poke);
     }
-    renderPagination();
+
+    if (loadMoreBtn) loadMoreBtn.disabled = false;
   } catch (e) {
     console.error(e);
     grid.innerHTML = '<p style="text-align:center;color:red;">Failed to load data.</p>';
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+// Weitere Pokemon laden (Load More)
+export async function loadMorePokemon() {
+  setIsLoading(true);
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+  if (loadMoreBtn) {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = 'Loading...';
+  }
+
+  try {
+    const newOffset = currentOffset + POKEMON_LIMIT;
+    const res = await fetch(`${POKE_API_BASE}?limit=${POKEMON_LIMIT}&offset=${newOffset}`);
+    const data = await res.json();
+
+    setCurrentOffset(newOffset);
+
+    for (let i = 0; i < data.results.length; i++) {
+      const poke = await fetch(data.results[i].url).then(r => r.json());
+      createPokemonCard(poke);
+      addToCurrentCards(poke);
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = 'Load More Pokemon';
+    }
+  } catch (e) {
+    console.error(e);
+    if (loadMoreBtn) {
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = 'Load More Pokemon';
+    }
   } finally {
     setIsLoading(false);
   }

@@ -1,16 +1,16 @@
-import { 
-  setCurrentOffset, setIsSearchResultsView 
+import {
+  setCurrentOffset, setIsSearchResultsView
 } from './config.js';
-import { loadData, fetchPokemonByType } from './api.js';
+import { loadInitialData, loadMorePokemon, fetchPokemonByType } from './api.js';
 
 export function handleSearch() {
   const searchInput = document.getElementById('searchInput');
   if (!searchInput || !searchInput.value.trim()) return;
-  
+
   const searchTerm = searchInput.value.trim().toLowerCase();
   // Implementierung der Suchfunktion hier
   console.log(`Searching for: ${searchTerm}`);
-  
+
   // Hier würde man normalerweise eine Suche mit dem searchTerm durchführen
   // und die Ergebnisse anzeigen
 }
@@ -22,13 +22,13 @@ export function clearSearch() {
   }
   setIsSearchResultsView(false);
   setCurrentOffset(0);
-  loadData();
+  loadInitialData();
 }
 
 export async function handleTypeFilter(e) {
   const type = e.target.value;
   if (!type) {
-    loadData();
+    loadInitialData();
     return;
   }
   await fetchPokemonByType(type);
@@ -45,6 +45,9 @@ export function setupEventListeners() {
 
   // Typ-Filter
   document.getElementById('typeFilter')?.addEventListener('change', handleTypeFilter);
+
+  // Load More Button
+  document.getElementById('loadMoreBtn')?.addEventListener('click', loadMorePokemon);
 
   // Scroll-to-Top Button
   const scrollToTopBtn = document.getElementById('scrollToTopBtn');
