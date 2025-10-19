@@ -1,24 +1,63 @@
 import {
-  setCurrentOffset, setIsSearchResultsView
+  setCurrentOffset, setIsSearchResultsView, setCurrentCards, addToCurrentCards
 } from './config.js';
 import { loadInitialData, loadMorePokemon, fetchPokemonByType } from './api.js';
+import { createPokemonCard } from './cardRenderer.js';
 
-export function handleSearch() {
+
+function validateSearchInput() {
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const value = searchInput.value.trim();
+
+  if (value.length >= 3) {
+    searchBtn.disabled = false;
+    searchBtn.title = 'Search for Pokemon';
+  } else {
+    searchBtn.disabled = true;
+    searchBtn.title = 'Enter at least 3 characters';
+  }
+}
+
+
+export async function handleSearch() {
   const searchInput = document.getElementById('searchInput');
   if (!searchInput || !searchInput.value.trim()) return;
 
   const searchTerm = searchInput.value.trim().toLowerCase();
-  // Implementierung der Suchfunktion hier
-  console.log(`Searching for: ${searchTerm}`);
+  if (searchTerm.length < 3) return;
 
-  // Hier würde man normalerweise eine Suche mit dem searchTerm durchführen
-  // und die Ergebnisse anzeigen
+  const grid = document.querySelector('.grid');
+  grid.innerHTML = '<p style="text-align:center;">Searching...</p>';
+  setIsSearchResultsView(true);
+  setCurrentCards([]);
+
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`);
+    if (response.ok) {
+      const pokemon = await response.json();
+      grid.innerHTML = '';
+      createPokemonCard(pokemon);
+      addToCurrentCards(pokemon);
+    } else {
+      grid.innerHTML = `<p style="text-align:center;color:orange;">No Pokemon found with name or ID "${searchTerm}"</p>`;
+    }
+  } catch (error) {
+    console.error(error);
+    grid.innerHTML = `<p style="text-align:center;color:red;">Failed to search. Try again.</p>`;
+  }
 }
+
 
 export function clearSearch() {
   const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
   if (searchInput) {
     searchInput.value = '';
+  }
+  if (searchBtn) {
+    searchBtn.disabled = true;
+    searchBtn.title = 'Enter at least 3 characters';
   }
   setIsSearchResultsView(false);
   setCurrentOffset(0);
@@ -35,31 +74,38 @@ export async function handleTypeFilter(e) {
 }
 
 export function setupEventListeners() {
-  // Suche
+  // Search input - validate on input
+  document.getElementById('searchInput')?.addEventListener('input', validateSearchInput);
+
+  // Search input - Enter key to search
   document.getElementById('searchInput')?.addEventListener('keypress', e => {
-    if (e.key === 'Enter') handleSearch();
+    if (e.key === 'Enter' && !document.getElementById('searchBtn').disabled) {
+      handleSearch();
+    }
   });
 
-  // Clear-Button
+  // Search button
+  document.getElementById('searchBtn')?.addEventListener('click', handleSearch);
+
+  // Clear button
   document.getElementById('clearSearchBtn')?.addEventListener('click', clearSearch);
 
-  // Typ-Filter
+  // Type filter
   document.getElementById('typeFilter')?.addEventListener('change', handleTypeFilter);
 
-  // Load More Button
+  // Load More button
   document.getElementById('loadMoreBtn')?.addEventListener('click', loadMorePokemon);
 
-  // Overlay Click Handler - schließt die erweiterte Karte
+  // Overlay click handler - closes expanded card
   document.getElementById('overlay')?.addEventListener('click', () => {
     const expandedCard = document.querySelector('.pokemon-card.expanded');
     if (expandedCard) {
-      // Trigger close button click
       const closeBtn = expandedCard.querySelector('.close-button');
       if (closeBtn) closeBtn.click();
     }
   });
 
-  // Scroll-to-Top Button
+  // Scroll-to-Top button
   const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
   window.addEventListener('scroll', () => {

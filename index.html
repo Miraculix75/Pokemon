@@ -6,7 +6,7 @@
   <title>Pokedex</title>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/animations.css"/>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 </head>
 <body class="main-layout">
 
@@ -19,8 +19,9 @@
   <header>
     <div class="logo">Pokedex</div>
     <div class="search">
-      <button id="clearSearchBtn" title="Clear search and show all">X</button>
-      <input type="text" id="searchInput" placeholder="Search by Name, ID, or Type..." />
+      <input type="text" id="searchInput" placeholder="Search Pokemon..." />
+      <button id="searchBtn" class="search-btn" disabled title="Enter at least 3 characters">Search</button>
+      <button id="clearSearchBtn" class="clear-btn" title="Clear search and show all">Clear</button>
       <select id="typeFilter" class="filterButton">
         <option value="">Filter by Type</option>
         <option value="fire">Fire</option>
