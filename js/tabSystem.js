@@ -35,26 +35,27 @@ export function setupTabFunctionality(container) {
   });
 }
 
-export function resetTabsToStats(container) {
+function deactivateAllTabs(container) {
   const tabButtons = container.querySelectorAll('.tab-btn');
   const tabContents = container.querySelectorAll('.tab-content');
-
-  // Alle Tabs deaktivieren
   tabButtons.forEach(btn => btn.classList.remove('active'));
   tabContents.forEach(content => {
     content.classList.remove('active');
     content.classList.add('hidden');
   });
+}
 
-  // Stats-Tab aktivieren
+function activateStatsTab(container) {
   const statsTabButton = container.querySelector('.tab-btn[data-tab="stats"]');
   const statsTabContent = container.querySelector('.tab-content.tab-stats');
-
-  if (statsTabButton) {
-    statsTabButton.classList.add('active');
-  }
+  if (statsTabButton) statsTabButton.classList.add('active');
   if (statsTabContent) {
     statsTabContent.classList.add('active');
     statsTabContent.classList.remove('hidden');
   }
+}
+
+export function resetTabsToStats(container) {
+  deactivateAllTabs(container);
+  activateStatsTab(container);
 }
