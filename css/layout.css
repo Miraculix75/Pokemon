@@ -58,11 +58,11 @@ footer {
     transition: opacity 1s ease;
     max-width: 1400px;
     margin: 0 auto;
-    
-    /* Grid-Stabilisierung */
-    grid-auto-rows: minmax(300px, auto);
+
+    /* Grid-Stabilisierung - feste Höhe für konsistente Kartengröße */
+    grid-auto-rows: 400px;
     contain: layout style;
-    
+
     /* Verbesserte Stabilität bei DOM-Änderungen */
     will-change: contents;
 }

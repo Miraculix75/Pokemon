@@ -53,13 +53,16 @@ export async function handleSearch() {
       return;
     }
 
-    // Load details for matched pokemon
+    // Load details for matched pokemon in parallel
     grid.innerHTML = '';
-    for (let i = 0; i < Math.min(matches.length, 50); i++) {
-      const pokemon = await fetch(matches[i].url).then(r => r.json());
+    const matchesToLoad = matches.slice(0, 50);
+    const pokemonPromises = matchesToLoad.map(m => fetch(m.url).then(r => r.json()));
+    const pokemonData = await Promise.all(pokemonPromises);
+
+    pokemonData.forEach(pokemon => {
       createPokemonCard(pokemon);
       addToCurrentCards(pokemon);
-    }
+    });
   } catch (error) {
     console.error(error);
     grid.innerHTML = `<p style="text-align:center;color:red;">Failed to search. Try again.</p>`;
