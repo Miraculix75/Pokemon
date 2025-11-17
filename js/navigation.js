@@ -1,4 +1,4 @@
-import { currentExpandedIndex, setCurrentExpandedIndex } from './config.js';
+import { currentExpandedIndex, setCurrentExpandedIndex, currentExpandedPokemonId, setCurrentExpandedPokemonId } from './config.js';
 import { resetTabsToStats } from './tabSystem.js';
 
 export const originalPositions = new Map();
@@ -19,13 +19,26 @@ function getOverlayState() {
 
 
 function prepareNextCard(cards, direction) {
-  let newIndex = direction > 0 ? 0 : cards.length - 1;
-  if (currentExpandedIndex >= 0 && currentExpandedIndex < cards.length) {
-    newIndex = currentExpandedIndex + direction;
-    if (newIndex < 0) newIndex = cards.length - 1;
-    if (newIndex >= cards.length) newIndex = 0;
+  // Filter to only cards in the grid (not the expanded card in body)
+  const gridCards = cards.filter(card => document.querySelector('.grid').contains(card));
+
+  if (gridCards.length === 0) return { newIndex: -1, newCard: null };
+
+  // Find current expanded card's index in the grid
+  const currentCard = document.querySelector('.pokemon-card.expanded');
+  let currentIndex = gridCards.findIndex(card => card === currentCard || card.dataset.pokemonId === currentExpandedPokemonId);
+
+  if (currentIndex === -1) {
+    // If not found, start from beginning or end based on direction
+    currentIndex = direction > 0 ? -1 : gridCards.length;
   }
-  return { newIndex, newCard: cards[newIndex] };
+
+  // Calculate next index
+  let newIndex = currentIndex + direction;
+  if (newIndex < 0) newIndex = gridCards.length - 1;
+  if (newIndex >= gridCards.length) newIndex = 0;
+
+  return { newIndex, newCard: gridCards[newIndex] };
 }
 
 
@@ -45,6 +58,7 @@ function openCard(card, index, overlayActive) {
   if (overlay && overlayActive) overlay.classList.add('active');
   document.body.classList.add('no-scroll');
   setCurrentExpandedIndex(index);
+  if (card.dataset.pokemonId) setCurrentExpandedPokemonId(card.dataset.pokemonId);
 }
 
 
@@ -61,7 +75,6 @@ export function navigateOverlay(direction) {
 function navigateToNextCard(direction, overlayActive) {
   setTimeout(() => {
     const cards = Array.from(document.querySelectorAll('.pokemon-card'));
-    originalPositions.clear();
     const { newIndex, newCard } = prepareNextCard(cards, direction);
     if (!newCard) return;
     saveCardPosition(newCard);

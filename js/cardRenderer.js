@@ -1,4 +1,4 @@
-import { setCurrentExpandedIndex } from './config.js';
+import { setCurrentExpandedIndex, setCurrentExpandedPokemonId } from './config.js';
 import { setupTabFunctionality } from './tabSystem.js';
 import { navigateOverlay, restoreCardPosition, originalPositions } from './navigation.js';
 import { resetTabsToStats } from './tabSystem.js';
@@ -66,6 +66,8 @@ function updateExpandedState(container) {
   document.body.classList.add('no-scroll');
   const allCards = Array.from(document.querySelectorAll('.pokemon-card'));
   setCurrentExpandedIndex(allCards.indexOf(container));
+  const pokemonId = container.dataset.pokemonId;
+  if (pokemonId) setCurrentExpandedPokemonId(pokemonId);
   const footer = container.querySelector('.card-footer');
   if (footer) footer.classList.remove('hidden');
 }
@@ -103,6 +105,7 @@ export function createPokemonCard(pokemon) {
   const type = pokemon.types[0].type.name;
   const container = document.createElement('div');
   container.className = `pokemon-card bg-${type}`;
+  container.dataset.pokemonId = pokemon.id;
   const cardData = prepareCardData(pokemon);
   container.innerHTML = createCardHTML(cardData);
   attachEventListeners(container);

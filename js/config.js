@@ -7,6 +7,7 @@ export let totalPokemonCount = 0;
 export let isLoading = false;
 export let isSearchResultsView = false;
 export let currentExpandedIndex = -1;
+export let currentExpandedPokemonId = null;
 export let currentCards = [];
 
 // Zustandssetter-Funktionen
@@ -28,6 +29,10 @@ export function setIsSearchResultsView(value) {
 
 export function setCurrentExpandedIndex(value) {
   currentExpandedIndex = value;
+}
+
+export function setCurrentExpandedPokemonId(value) {
+  currentExpandedPokemonId = value;
 }
 
 export function setCurrentCards(cards) {
