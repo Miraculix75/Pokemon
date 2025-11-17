@@ -33,14 +33,32 @@ export async function handleSearch() {
   setCurrentCards([]);
 
   try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`);
-    if (response.ok) {
-      const pokemon = await response.json();
+    // First try exact match by ID or name
+    const exactResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm}`);
+    if (exactResponse.ok) {
+      const pokemon = await exactResponse.json();
       grid.innerHTML = '';
       createPokemonCard(pokemon);
       addToCurrentCards(pokemon);
-    } else {
-      grid.innerHTML = `<p style="text-align:center;color:orange;">No Pokemon found with name or ID "${searchTerm}"</p>`;
+      return;
+    }
+
+    // If no exact match, search through all pokemon by name
+    const allPokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000`);
+    const allPokemonData = await allPokemonResponse.json();
+    const matches = allPokemonData.results.filter(p => p.name.includes(searchTerm));
+
+    if (matches.length === 0) {
+      grid.innerHTML = `<p style="text-align:center;color:orange;">No Pokemon found matching "${searchTerm}"</p>`;
+      return;
+    }
+
+    // Load details for matched pokemon
+    grid.innerHTML = '';
+    for (let i = 0; i < Math.min(matches.length, 50); i++) {
+      const pokemon = await fetch(matches[i].url).then(r => r.json());
+      createPokemonCard(pokemon);
+      addToCurrentCards(pokemon);
     }
   } catch (error) {
     console.error(error);
