@@ -54,10 +54,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Sanfte Einblendung (wie im alten Code)
+  // Sanfte Einblendung 
   video.addEventListener('timeupdate', () => {
     const percent = video.duration ? (video.currentTime / video.duration) : 0;
-    grid.style.opacity = Math.min(percent * 2, 1);
+    grid.style.opacity = Math.min(percent * 1, 1);
   });
 
   // Am Ende: Inhalte zeigen & Flag setzen
