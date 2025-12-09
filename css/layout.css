@@ -12,11 +12,23 @@ footer {
 
 header {
     top: 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 0.8fr minmax(auto, 1400px) 0.8fr;
+    grid-template-areas: ". content .";
     padding: 1rem;
     height: 6rem;
+}
+
+header .logo {
+    grid-area: content;
+    justify-self: start;
+    align-self: center;
+}
+
+header .search {
+    grid-area: content;
+    justify-self: end;
+    align-self: center;
 }
 
 footer {
