@@ -80,26 +80,49 @@
   }
 
   .grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
     max-width: 100%;
+    grid-auto-rows: minmax(180px, auto);
   }
 
   .pokemon-card {
-    min-height: 280px;
-    padding: 15px;
+    min-height: 160px;
+    padding: 8px;
   }
 
   .pokemon-name {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
   }
 
   .pokemon-image {
-    height: 150px;
+    height: 80px;
+    margin: 0.3rem 0;
   }
 
   .pokemon-image img {
-    max-height: 140px;
+    max-height: 75px;
+  }
+
+  .pokemon-number {
+    font-size: 0.65rem;
+    top: 0.3rem;
+    left: 0.3rem;
+  }
+
+  .type {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .pokemon-types {
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+  }
+
+  .pokemon-stats {
+    display: none;
   }
 
   footer {
