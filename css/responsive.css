@@ -97,6 +97,21 @@
     font-size: 0.85rem;
     width: 90%;
   }
+
+  /* Expanded Card für sehr schmale Bildschirme */
+  .pokemon-card.expanded {
+    width: 95%;
+    max-width: 95%;
+    padding: 0.5rem;
+  }
+
+  .pokemon-card.expanded .pokemon-image {
+    max-height: 150px;
+  }
+
+  .pokemon-card.expanded .pokemon-image img {
+    max-height: 140px;
+  }
 }
 
 /* Tablet and larger (768px and up) */
@@ -240,6 +255,21 @@
     padding: 0.6rem 1.5rem;
     font-size: 0.9rem;
     width: 90%;
+  }
+
+  /* Expanded Card for small mobile */
+  .pokemon-card.expanded {
+    width: 92%;
+    max-width: 92%;
+    padding: 0.75rem;
+  }
+
+  .pokemon-card.expanded .pokemon-image {
+    max-height: 180px;
+  }
+
+  .pokemon-card.expanded .pokemon-image img {
+    max-height: 170px;
   }
 
   #scrollToTopBtn {
@@ -410,6 +440,24 @@ html, body {
   box-sizing: border-box;
 }
 
+
+/* Landscape mode optimizations */
+@media (max-height: 600px) and (orientation: landscape) {
+  .pokemon-card.expanded {
+    max-height: 90vh;
+    max-width: 500px;
+    width: 60%;
+    overflow-y: auto;
+  }
+
+  .pokemon-card.expanded .pokemon-image {
+    max-height: 180px;
+  }
+
+  .pokemon-card.expanded .pokemon-image img {
+    max-height: 170px;
+  }
+}
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
